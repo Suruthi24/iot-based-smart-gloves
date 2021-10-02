@@ -1,0 +1,89 @@
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27,16,2);    // set the LCD address to 0x27 & 0x3F or use i2c LCD scanner program to know address
+
+int fs1 = A0, fs2= A1, fs3=A2, fs4=A3, threshold=880, result, old_result;
+
+String msg1 = "welcome";
+String msg2 = "I am sick";
+String msg3 = "I need to go out";
+String msg4 = "Thank you";
+
+void setup()
+{                                       
+  lcd.init();                                            
+  lcd.clear();
+ 
+  lcd.print(" DEAF AND DUMP  ");
+  lcd.setCursor(0,1);
+  lcd.print("    EXPLORER    ");
+  lcd_bl();
+    
+  Serial.begin(9600); 
+}
+
+void loop()
+{
+     if(analogRead(fs1)>=845) 
+       {
+        result = 1;
+       }
+     delay(200);
+     
+     if(analogRead(fs2)>=825) 
+       {
+        result = 2;
+       }
+     delay(200);
+     
+     if(analogRead(fs3)>=800) 
+       {
+        result = 3;
+       }
+     delay(200);
+     
+     if(analogRead(fs4)>=810) 
+       {
+        result = 4;
+       }
+     delay(200);
+     
+     if(result!=old_result)
+     {
+       old_result=result;
+       lcd.clear();
+       
+       if(result==1)
+         {
+           lcd.print(msg1);
+           Serial.println(msg1);
+           lcd_bl();
+         }
+       if(result==2)
+         {
+           lcd.print(msg2);
+           Serial.println(msg2);
+           lcd_bl();
+         }
+       if(result==3)
+         {
+           lcd.print(msg3);
+           Serial.println(msg3);
+           lcd_bl();           
+         }
+       if(result==4)
+         {
+           lcd.print(msg4);
+           Serial.println(msg4);
+           lcd_bl();
+         }
+     }
+}
+
+void lcd_bl()
+{
+  lcd.backlight();
+  delay(5000);
+  lcd.noBacklight(); 
+}
